@@ -1,44 +1,25 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import TodoList from "./TodoList";
 import { v4 as uuidv4 } from 'uuid';
+import NewTodoInput from "./NewTodoInput";
 
 
 export default function Todos() {
-    const [ todos , setTodos ] = useState([
-        {
-            id : uuidv4(),
-            title : 'go to school',
-            status : true
-        },
-        {
-            id : uuidv4(),
-            title : 'go to gym',
-            status : false,
-        }
-  ]);
+    const [ todos , setTodos ] = useState([]);
 
 
-const [ newTodoTitle , setNewTodotitle ] = useState("");
 
-const onInputNewTodoChangeHandler = (event) => {
-   setNewTodotitle(event.target.value)
-};
-
-const addNewTodoHandler = (event) => {
-    if( event.key === 'Enter' && newTodoTitle !== "" ) {
+const addNewTodoHandler = (todoTitle) => {
 
         setTodos([
             ...todos,
             {
                 id : uuidv4(),
-                title : newTodoTitle,
+                title : todoTitle,
                 status : false,
             }
         ])
 
-        setNewTodotitle('');
-
-    }
 
 }
 
@@ -82,6 +63,14 @@ const editTodoTitleHandler = (todo , newTitleValue ) => {
 }
 
 
+useEffect(() => {
+    setTodos( JSON.parse( localStorage.getItem('todos_list')) ?? [] )
+},[])
+
+useEffect(() => {
+     localStorage.setItem('todos_list' , JSON.stringify(todos))
+}, [ todos ])
+
     return (
 
            <div className="flex items-center justify-center h-screen">
@@ -89,13 +78,7 @@ const editTodoTitleHandler = (todo , newTitleValue ) => {
                 <div className="flex items-center mb-6">
                     <h1 className="mr-6 text-4xl font-bold text-purple-600"> TO DO APP</h1>
                 </div>
-                <div className="relative">
-                    <input type="text" placeholder="What needs to be done today?"
-                     onChange={onInputNewTodoChangeHandler}
-                     onKeyDown={addNewTodoHandler}
-                     value={newTodoTitle}
-                    className="w-full px-2 py-3 border rounded outline-none border-grey-600" />
-                </div>
+                <NewTodoInput addTodo={addNewTodoHandler} />
                <TodoList todos={todos} deleteTodo={deleteTodoHandler} toggleTodoStatus={toggleTodoStatusHandler} editTodoTitle={editTodoTitleHandler}/>
             </div>
         </div>

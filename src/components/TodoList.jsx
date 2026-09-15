@@ -3,6 +3,7 @@ import TodoListItem from "./TodoListItem";
 
 export default function TodoList( { todos , deleteTodo , toggleTodoStatus , editTodoTitle }) {
 
+    console.log('todo list re render')
 
     return(
 
