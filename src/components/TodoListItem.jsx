@@ -1,10 +1,10 @@
-
 import { toast } from "react-toastify";
 import DeleteIcon from "./icons/DeleteIcon";
 import EditIcon from "./icons/EditIcon";
 import { useContext, useEffect, useState } from "react";
 import { TodosContext } from "./context/TodosContext";
 import axios from "axios";
+import { Link } from "react-router-dom";
 
 export default function TodoListItem({ todo }) {
   const [editMode, setEditMode] = useState(false);
@@ -37,7 +37,7 @@ export default function TodoListItem({ todo }) {
   const deleteTodoHandler = async (todo) => {
     try {
       await axios.delete(
-        `https://6aba686d5b549d818d6261f5.mockapi.io/todos/${todo.id}`
+        `https://6aba686d5b549d818d6261f5.mockapi.io/todos/${todo.id}`,
       );
 
       todoDispatcher({
@@ -48,9 +48,7 @@ export default function TodoListItem({ todo }) {
       toast.success("todo deleted");
     } catch (error) {
       console.log(error);
-      toast.error(
-        error.response?.data?.message || "Failed to delete todo"
-      );
+      toast.error(error.response?.data?.message || "Failed to delete todo");
     }
   };
 
@@ -62,7 +60,7 @@ export default function TodoListItem({ todo }) {
         {
           title: todo.title,
           status: !todo.status,
-        }
+        },
       );
 
       todoDispatcher({
@@ -74,7 +72,7 @@ export default function TodoListItem({ todo }) {
     } catch (error) {
       console.log(error);
       toast.error(
-        error.response?.data?.message || "Failed to update todo status"
+        error.response?.data?.message || "Failed to update todo status",
       );
     }
   };
@@ -87,7 +85,7 @@ export default function TodoListItem({ todo }) {
         {
           title: newTitleValue,
           status: todo.status,
-        }
+        },
       );
 
       todoDispatcher({
@@ -100,7 +98,7 @@ export default function TodoListItem({ todo }) {
     } catch (error) {
       console.log(error);
       toast.error(
-        error.response?.data?.message || "Failed to update todo title"
+        error.response?.data?.message || "Failed to update todo title",
       );
     }
   };
@@ -116,10 +114,7 @@ export default function TodoListItem({ todo }) {
             className="w-full px-4 py-2 border border-gray-200 rounded"
           />
 
-          <DeleteIcon
-            className="ml-2"
-            onClick={() => setEditMode(false)}
-          />
+          <DeleteIcon className="ml-2" onClick={() => setEditMode(false)} />
         </div>
       ) : (
         <div className="flex items-center">
@@ -130,13 +125,15 @@ export default function TodoListItem({ todo }) {
               onChange={() => toggleTodoStatusHandler(todo)}
             />
 
-            <p
-              className={`inline-block mt-1 ml-2 text-gray-600 ${
-                todo?.status ? "line-through" : ""
-              }`}
-            >
-              {todo?.title}
-            </p>
+            <Link to={`/todos/${todo.id}`}>
+              <p
+                className={`inline-block mt-1 ml-2 text-gray-600 ${
+                  todo?.status ? "line-through" : ""
+                }`}
+              >
+                {todo?.title}
+              </p>
+            </Link>
           </div>
 
           <button
